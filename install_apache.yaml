@@ -1,0 +1,6 @@
+---
+- name: Configure web server
+  hosts: ubuntu_ec2
+  become: true
+  roles: 
+    - web-servers
