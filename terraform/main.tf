@@ -3,39 +3,27 @@ provider "aws" {
   region = "us-east-1"
 }
 
-# AMI
-data "aws_ami" "ubuntu" {
+# Data source for AMI id
+data "aws_ami" "latest_amazon_linux" {
+  owners      = ["amazon"]
   most_recent = true
-
   filter {
     name   = "name"
-    values = ["ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-*"]
+    values = ["amzn2-ami-hvm-*-x86_64-gp2"]
   }
-
-  filter {
-    name   = "virtualization-type"
-    values = ["hvm"]
-  }
-
-  owners = ["099720109477"] # Canonical
 }
 
 # EC2 instance
 resource "aws_instance" "ec2" {
   count                = 3
-  ami                  = data.aws_ami.ubuntu.id
+  ami                  = data.aws_ami.latest_amazon_linux.id
   subnet_id            = aws_default_subnet.default_subnet.id
   instance_type        = "t3.medium"
   iam_instance_profile = "LabInstanceProfile"
   key_name             = aws_key_pair.key_pair.key_name
   security_groups      = [aws_security_group.sg.id]
-  user_data            = <<EOF
-  #! /bin/bash
-  sudo yum update -y
-  sudo yum install git -y
-EOF
   tags = {
-    Name = "ansible-${count.index + 1}-ec2"
+    Name = "ec2-ansible-${count.index + 1}"
   }
 }
 
@@ -88,6 +76,6 @@ resource "aws_security_group" "sg" {
   }
 
   tags = {
-    Name = "sg_ansible"
+    Name = "sg-ansible"
   }
 }
