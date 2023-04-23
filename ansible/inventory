@@ -1,7 +1,5 @@
 [ubuntu_vm]
-34.239.120.199 ansible_user=ubuntu
-54.208.228.231 ansible_user=ubuntu
-44.202.14.66 ansible_user=ubuntu
+44.211.136.228 ansible_user=ubuntu webserver=apache2
 
 [redhat_vm]
-44.192.61.163
+3.87.13.0 ansible_user=ec2-user webserver=httpd 

@@ -3,34 +3,29 @@ provider "aws" {
   region = "us-east-1"
 }
 
-# Data source for AMI id
-data "aws_ami" "ubuntu" {
-  most_recent = true
-
-  filter {
-    name   = "name"
-    values = ["ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-*"]
-  }
-
-  filter {
-    name   = "virtualization-type"
-    values = ["hvm"]
-  }
-
-  owners = ["099720109477"] # Canonical
-}
-
-# EC2 instance
-resource "aws_instance" "ec2" {
-  count                = 3
-  ami                  = data.aws_ami.ubuntu.id
+# Ubuntu EC2 instance
+resource "aws_instance" "ec2-ubuntu" {
+  ami                  = "ami-007855ac798b5175e"
   subnet_id            = aws_default_subnet.default_subnet.id
   instance_type        = "t3.medium"
   iam_instance_profile = "LabInstanceProfile"
   key_name             = aws_key_pair.key_pair.key_name
   security_groups      = [aws_security_group.sg.id]
   tags = {
-    Name = "ec2-ansible-${count.index + 1}"
+    Name = "ubuntu-ansible"
+  }
+}
+
+# RedHat EC2 instance
+resource "aws_instance" "ec2-redhat" {
+  ami                  = "ami-016eb5d644c333ccb"
+  subnet_id            = aws_default_subnet.default_subnet.id
+  instance_type        = "t3.medium"
+  iam_instance_profile = "LabInstanceProfile"
+  key_name             = aws_key_pair.key_pair.key_name
+  security_groups      = [aws_security_group.sg.id]
+  tags = {
+    Name = "redhat-ansible"
   }
 }
 
