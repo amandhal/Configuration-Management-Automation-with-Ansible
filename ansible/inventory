@@ -1,0 +1,7 @@
+[ubuntu_vm]
+34.239.120.199 ansible_user=ubuntu
+54.208.228.231 ansible_user=ubuntu
+44.202.14.66 ansible_user=ubuntu
+
+[redhat_vm]
+44.192.61.163

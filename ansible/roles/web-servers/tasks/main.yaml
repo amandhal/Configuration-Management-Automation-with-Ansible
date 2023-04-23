@@ -1,4 +1,4 @@
 - name: Install apache httpd
   apt:
-   name: apache2
-   state: latest
+    name: apache2
+    state: latest
