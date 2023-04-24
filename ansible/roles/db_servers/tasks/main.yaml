@@ -1,0 +1,13 @@
+- name: Install the latest version MariaDB (RedHat)
+  tags: redhat,db,mariadb
+  dnf:
+    name: mariadb-server
+    state: latest
+  when: ansible_distribution == "RedHat"
+  
+- name: Install the latest version MariaDB (Ubuntu)
+  tags: db,mariadb,ubuntu
+  apt:
+    name: mariadb-server
+    state: latest
+  when: ansible_distribution == "Ubuntu"

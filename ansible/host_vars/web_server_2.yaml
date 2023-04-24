@@ -1,0 +1,4 @@
+apache_package_name: httpd
+apache_service: httpd
+ssh_users: "ec2-user aman"
+ssh_template_file: sshd_config_redhat.j2
