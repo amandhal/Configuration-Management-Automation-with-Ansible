@@ -1,0 +1,4 @@
+- name: add ssh key for aman
+  authorized_key:
+    user: aman
+    key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"

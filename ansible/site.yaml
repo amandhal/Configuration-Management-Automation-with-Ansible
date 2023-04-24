@@ -1,3 +1,4 @@
+---
 - hosts: all
   become: true
   pre_tasks: 
@@ -18,107 +19,29 @@
 
 - hosts: all
   become: true
-  tasks:
-    - name: add ssh key for aman 
-      tags: always
-      authorized_key:
-        user: aman
-        key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+  roles:
+    - base
 
       
 - hosts: workstations
   become: true
-  tasks:
-    - name: install unzip
-      package:
-        name: unzip
-        
-    - name: install terraform
-      unarchive:
-        src: https://releases.hashicorp.com/terraform/1.4.5/terraform_1.4.5_linux_amd64.zip
-        dest: /usr/local/bin
-        remote_src: yes
-        mode: 0755
-        owner: root
-        group: root
+  roles:
+    - workstations
       
       
 - hosts: web_servers
   become: true
-  tasks:  
-    - name: Install the latest version of Apache on Ubuntu
-      tags: apache,apache2,ubuntu
-      apt:
-        name: 
-          - apache2
-        state: latest
-      when: ansible_distribution == "Ubuntu"
-        
-    - name: Install the latest version of Apache on RedHat
-      tags: apache,redhat,httpd
-      dnf:
-        name: 
-          - httpd
-        state: latest 
-      when: ansible_distribution == "RedHat"  
-      
-    - name: start and enable httpd (RedHat)
-      tags: apache,redhat,httpd
-      service:
-        name: httpd
-        state: started
-        enabled: yes
-      when: ansible_distribution == "RedHat"
-      
-    - name: change email address for admin
-      tags: apache,redhat,httpd
-      lineinfile:
-        path: /etc/httpd/conf/httpd.conf
-        regexp: '^ServerAdmin'
-        line: ServerAdmin adhal@myseneca.ca
-      when: ansible_distribution == "RedHat"
-      register: httpd
-      
-    - name: Restart httpd (RedHat)
-      tags: apache,redhat,httpd
-      service:
-        name: httpd
-        state: restarted
-      when: httpd.changed
-    
-    - name: copy default html file for site
-      tags: apache,apache2,httpd
-      copy:
-        src: default_site.html
-        dest: /var/www/html/index.html
-        owner: root
-        group: root
-        mode: 0644
+  roles:
+    - web_servers
         
       
 - hosts: db_servers
   become: true
-  tasks:
-    - name: Install the latest version MariaDB (RedHat)
-      tags: redhat,db,mariadb
-      dnf:
-        name: mariadb-server
-        state: latest
-      when: ansible_distribution == "RedHat"
-      
-    - name: Install the latest version MariaDB (Ubuntu)
-      tags: db,mariadb,ubuntu
-      apt:
-        name: mariadb-server
-        state: latest
-      when: ansible_distribution == "Ubuntu"
+  roles:
+    - db_servers
       
       
 - hosts: file_servers
   become: true
-  tasks:
-    - name: Install samba package
-      tags: samba
-      package:
-        name: samba
-        state: latest
+  roles:
+    - file_servers

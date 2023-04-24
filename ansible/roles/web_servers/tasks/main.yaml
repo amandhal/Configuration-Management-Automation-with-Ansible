@@ -1,0 +1,48 @@
+- name: Install the latest version of Apache on Ubuntu
+  tags: apache,apache2,ubuntu
+  apt:
+    name: 
+      - apache2
+    state: latest
+  when: ansible_distribution == "Ubuntu"
+    
+- name: Install the latest version of Apache on RedHat
+  tags: apache,redhat,httpd
+  dnf:
+    name: 
+      - httpd
+    state: latest 
+  when: ansible_distribution == "RedHat"  
+  
+- name: start and enable httpd (RedHat)
+  tags: apache,redhat,httpd
+  service:
+    name: httpd
+    state: started
+    enabled: yes
+  when: ansible_distribution == "RedHat"
+  
+- name: change email address for admin
+  tags: apache,redhat,httpd
+  lineinfile:
+    path: /etc/httpd/conf/httpd.conf
+    regexp: '^ServerAdmin'
+    line: ServerAdmin adhal@myseneca.ca
+  when: ansible_distribution == "RedHat"
+  register: httpd
+  
+- name: Restart httpd (RedHat)
+  tags: apache,redhat,httpd
+  service:
+    name: httpd
+    state: restarted
+  when: httpd.changed
+
+- name: copy default html file for site
+  tags: apache,apache2,httpd
+  copy:
+    src: default_site.html
+    dest: /var/www/html/index.html
+    owner: root
+    group: root
+    mode: 0644
