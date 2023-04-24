@@ -1,2 +1,4 @@
 apache_package_name: apache2
 apache_service: apache2
+ssh_users: "ubuntu aman"
+ssh_template_file: sshd_config_ubuntu.j2
