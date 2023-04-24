@@ -1,0 +1,64 @@
+- hosts: all
+  become: true
+  pre_tasks: 
+    - name: Install updates (RedHat)
+      tags: always
+      dnf:
+        update_only: yes
+        update_cache: yes
+      when: ansible_distribution == "RedHat"  
+      
+    - name: Install updates (Ubuntu)
+      tags: always
+      apt:
+        upgrade: dist
+        update_cache: yes
+      when: ansible_distribution == "Ubuntu"   
+      
+      
+- hosts: web_servers
+  become: true
+  tasks:  
+    - name: Install the latest version of Apache on Ubuntu
+      tags: apache,apache2,ubuntu
+      apt:
+        name: 
+          - apache2
+        state: latest
+      when: ansible_distribution == "Ubuntu"
+        
+    - name: Install the latest version of Apache on RedHat
+      tags: apache,redhat,httpd
+      dnf:
+        name: 
+          - httpd
+        state: latest 
+      when: ansible_distribution == "RedHat"  
+      
+      
+- hosts: db_servers
+  become: true
+  tasks:
+    - name: Install the latest version MariaDB (RedHat)
+      tags: redhat,db,mariadb
+      dnf:
+        name: mariadb-server
+        state: latest
+      when: ansible_distribution == "RedHat"
+      
+    - name: Install the latest version MariaDB (Ubuntu)
+      tags: db,mariadb,ubuntu
+      apt:
+        name: mariadb-server
+        state: latest
+      when: ansible_distribution == "Ubuntu"
+      
+      
+- hosts: file_servers
+  become: true
+  tasks:
+    - name: Install samba package
+      tags: samba
+      package:
+        name: samba
+        state: latest

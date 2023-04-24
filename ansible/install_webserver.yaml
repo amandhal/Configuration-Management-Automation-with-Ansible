@@ -1,9 +1,0 @@
-- name: install web server
-  hosts: all
-  become: true
-  tasks: 
-    - name: Install the latest version of Web Server
-      package:
-        name: 
-          - "{{ webserver }}"
-        state: latest

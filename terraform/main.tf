@@ -5,6 +5,7 @@ provider "aws" {
 
 # Ubuntu EC2 instance
 resource "aws_instance" "ec2-ubuntu" {
+  count                = 3
   ami                  = "ami-007855ac798b5175e"
   subnet_id            = aws_default_subnet.default_subnet.id
   instance_type        = "t3.medium"
@@ -12,7 +13,7 @@ resource "aws_instance" "ec2-ubuntu" {
   key_name             = aws_key_pair.key_pair.key_name
   security_groups      = [aws_security_group.sg.id]
   tags = {
-    Name = "ubuntu-ansible"
+    Name = "ubuntu-ansible-${count.index + 1}"
   }
 }
 
