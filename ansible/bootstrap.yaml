@@ -1,0 +1,43 @@
+- hosts: all
+  become: true
+  pre_tasks: 
+    - name: Install updates (RedHat)
+      tags: always
+      dnf:
+        update_only: yes
+        update_cache: yes
+      when: ansible_distribution == "RedHat"  
+      
+    - name: Install updates (Ubuntu)
+      tags: always
+      apt:
+        upgrade: dist
+        update_cache: yes
+      when: ansible_distribution == "Ubuntu"   
+      
+
+- hosts: all
+  become: true
+  tasks:
+    - name: create aman user
+      tags: always
+      user:
+        name: aman
+        groups: root
+        
+    - name: add ssh key for aman 
+      tags: always
+      authorized_key:
+        user: aman
+        key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+        
+    - name: add sudoers file for aman
+      tags: always
+      copy: 
+        src: sudoers_aman
+        dest: /etc/sudoers.d/aman
+        owner: root
+        group: root
+        mode: 0440
+
+      
